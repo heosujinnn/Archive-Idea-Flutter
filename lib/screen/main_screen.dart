@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
 
     //아이디어 목록을 가져오기
-    //getIdeaInfo();
+    getIdeaInfo();
 
     //(임시)
     //setInsertIdeaInfo();

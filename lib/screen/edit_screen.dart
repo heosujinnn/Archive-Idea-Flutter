@@ -1,3 +1,4 @@
+import 'package:archive_idea_flutter/database/database_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../data/idea_info.dart';
@@ -26,6 +27,9 @@ class _EditScreenState extends State<EditScreen> {
 
   // 아이디어 선택된 현재 중요도 점수( default value = 3 )
   int priorityPoint = 3;
+
+  // 데이터베이스 Helper
+  final dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +373,7 @@ class _EditScreenState extends State<EditScreen> {
                       ),
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async {
                     //작성 처리(insert)
                     String titleValue = _titleController.text.toString();
                     String motiveValue = _motiveController.text.toString();
@@ -395,10 +399,14 @@ class _EditScreenState extends State<EditScreen> {
                         motive: motiveValue,
                         content: contentValue,
                         priority: priorityPoint,
-                        feedback: feedbackValue.isNotEmpty ? feedbackValue : '',
+                        feedback: feedbackValue.isNotEmpty ? feedbackValue : '',  // 비어있어도 가능이기에
                         createdAt: DateTime.now().millisecondsSinceEpoch,
                       );
-                      
+
+                      await setInsertIdeaInfo(ideaInfo);
+                      if(mounted){
+                        Navigator.pop(context);
+                      }
                     }
                   }),
             ],
@@ -406,6 +414,10 @@ class _EditScreenState extends State<EditScreen> {
         ),
       ),
     );
+  }
+  Future<void> setInsertIdeaInfo(IdeaInfo ideaInfo) async {
+    await dbHelper.initDatabase();
+    await dbHelper.insertIdeaInfo(ideaInfo);
   }
 
   void initClickStatus() {
