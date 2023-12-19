@@ -8,12 +8,9 @@ class DatabaseHelper {
 
   //데이터베이스 초기화 및 열기
   Future<void> initDatabase() async {
-    // db 경로 가져오기
     String path = join(await getDatabasesPath(), 'archive_idea.db');
-
-    // db 열기 또는 생성
-    database = await openDatabase(path, version: 1, onCreate: (db, version) {
-      // db가 생성될 때 실행되는 코드
+    database = await openDatabase(path, version: 2, onCreate: (db, version) {
+      // 최초 생성 시, 새로운 테이블을 생성합니다.
       db.execute('''
       CREATE TABLE IF NOT EXISTS tb_idea(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,11 +19,16 @@ class DatabaseHelper {
         content TEXT,
         priority INTEGER,
         feedback TEXT,
-        createAt INTEGER
+        createdAt INTEGER
       )
-      ''');
-    },
-    );
+    ''');
+    }, onUpgrade: (db, oldVersion, newVersion) async {
+      // 이전 버전과 새로운 버전 간의 차이를 처리하는 로직을 작성합니다.
+      if (oldVersion < 2) {
+        // 새로운 버전에서 추가된 스키마를 여기에 추가합니다.
+        await db.execute('ALTER TABLE tb_idea ADD COLUMN createdAt INTEGER');
+      }
+    });
   }
 
   //insert

@@ -3,7 +3,7 @@ class IdeaInfo {
   String title; // 아이디어 제목
   String motive; // 작성 계기
   String content; // 아이디어 내용
-  String priority; // 아이디어 중요도 점수
+  int priority; // 아이디어 중요도 점수
   String feedback; // 유저 피드백 사항
   int createdAt; //생성 일시 (년월일시분으로 표시됨)
 
@@ -42,6 +42,6 @@ class IdeaInfo {
       content: map['content'],
       priority: map['priority'],
       feedback: map['feedback'],
-      createdAt: map['createAt'],);
+      createdAt: map['createdAt'],);
   }
 }
