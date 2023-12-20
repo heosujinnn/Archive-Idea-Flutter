@@ -46,7 +46,9 @@ class _MainScreenState extends State<MainScreen> {
         child: ListView.builder(
           itemCount: lstIdeaInfo.length,
           itemBuilder: (context, index) {
-            return listItem(index);
+            return GestureDetector(child: listItem(index),onTap: () {
+              Navigator.pushNamed(context, '/detail',arguments: lstIdeaInfo[index]); // 내가 클릭한 것 넘겨주는 네비게이터 처리
+            },); // 인덱스별로 생성하는 방식
           },
         ),
       ),

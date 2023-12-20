@@ -32,6 +32,43 @@ class _EditScreenState extends State<EditScreen> {
   final dbHelper = DatabaseHelper();
 
   @override
+  void initState() {
+    super.initState();
+
+    // 기존 데이터를 수정할 경우 수정의 편의를 위해 기존 데이터를 입력 자동으로 기입되도록
+    if (widget.ideaInfo != null) {
+      _titleController.text = widget.ideaInfo!.title;
+      _motiveController.text = widget.ideaInfo!.motive;
+      _contentController.text = widget.ideaInfo!.content;
+      // 피드백 (선택) 값이 비어있는지 확인함.
+      if (widget.ideaInfo!.feedback.isNotEmpty) {
+        _feedbackController.text = widget.ideaInfo!.feedback;
+      }
+
+      //아이디어 중요도 점수 셋팅
+      initClickStatus(); // 중요도 초기화하는 함수
+      switch (widget.ideaInfo!.priority) {
+        case 1:
+          isClickPoint1 = true;
+          break;
+        case 2:
+          isClickPoint2 = true;
+          break;
+        case 3:
+          isClickPoint3 = true;
+          break;
+        case 4:
+          isClickPoint4 = true;
+          break;
+        case 5:
+          isClickPoint5 = true;
+          break;
+      }
+      priorityPoint = widget.ideaInfo!.priority;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -48,7 +85,9 @@ class _EditScreenState extends State<EditScreen> {
           },
         ),
         title: Text(
-          '새 아이디어 작성',
+          // 아이디어데이터가 원래 없었으면(main에서 들어가면) title에 새 아이디어 작성이고,
+          // (edit 아이디어 편집으로 들어가면) 원래 데이터가 있으면 아이디어편집으로 쓰여짐
+          widget.ideaInfo == null ? '새 아이디어 작성' : '아이디어 편집',
           style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
@@ -399,12 +438,13 @@ class _EditScreenState extends State<EditScreen> {
                         motive: motiveValue,
                         content: contentValue,
                         priority: priorityPoint,
-                        feedback: feedbackValue.isNotEmpty ? feedbackValue : '',  // 비어있어도 가능이기에
+                        feedback: feedbackValue.isNotEmpty ? feedbackValue : '',
+                        // 비어있어도 가능이기에
                         createdAt: DateTime.now().millisecondsSinceEpoch,
                       );
 
                       await setInsertIdeaInfo(ideaInfo);
-                      if(mounted){
+                      if (mounted) {
                         Navigator.pop(context);
                       }
                     }
@@ -415,6 +455,7 @@ class _EditScreenState extends State<EditScreen> {
       ),
     );
   }
+
   Future<void> setInsertIdeaInfo(IdeaInfo ideaInfo) async {
     await dbHelper.initDatabase();
     await dbHelper.insertIdeaInfo(ideaInfo);

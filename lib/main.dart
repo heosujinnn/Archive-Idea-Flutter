@@ -1,4 +1,5 @@
 import 'package:archive_idea_flutter/data/idea_info.dart';
+import 'package:archive_idea_flutter/screen/detail_screen.dart';
 import 'package:archive_idea_flutter/screen/edit_screen.dart';
 import 'package:archive_idea_flutter/screen/main_screen.dart';
 import 'package:archive_idea_flutter/screen/splash_screen.dart';
@@ -30,6 +31,11 @@ class MyApp extends StatelessWidget {
           final IdeaInfo? ideaInfo=settings.arguments as IdeaInfo?;
           return MaterialPageRoute(builder: (context){
             return EditScreen(ideaInfo: ideaInfo,);
+          },);
+        }else if(settings.name=='/detail'){
+          final IdeaInfo? ideaInfo=settings.arguments as IdeaInfo?;
+          return MaterialPageRoute(builder: (context){
+            return DetailScreen(ideaInfo: ideaInfo,);
           },);
         }
       },);
